@@ -5,4 +5,4 @@ sleep_min = 9
 sleep_max = 18
 
 pg_start = 1
-pg_end = 2350
+pg_end = 4350
