@@ -1,6 +1,6 @@
 # Config for malscraper script
 
-DB = "db/anime.db"
+DB= "db/anime.db"
 sleep_min = 9
 sleep_max = 18
 
