@@ -8,4 +8,3 @@ import random
 import time
 import pandas as pd
 import sqlite3
-from dbtbl import *
