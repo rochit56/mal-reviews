@@ -47,7 +47,7 @@ CREATE TABLE animes(
     source_material TEXT,
     air_date TEXT,
     overall_rating FLOAT,
-    members INT,
+    members TEXT,
     synopsis TEXT,
     FOREIGN KEY(studio_id) REFERENCES studios(studio_id)  
 ); 
