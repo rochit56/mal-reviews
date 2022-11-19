@@ -5,6 +5,8 @@
 
 Scripts for web scraping anime review data from https://myanimelist.net/ into a SQL database 
 
+A sample ![Database](db/anime.db) is included in this repo.
+
 ## Executing
 
 To run this code on your hardware
