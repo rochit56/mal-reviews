@@ -49,7 +49,9 @@ CREATE TABLE animes(
     overall_rating FLOAT,
     members TEXT,
     synopsis TEXT,
-    FOREIGN KEY(studio_id) REFERENCES studios(studio_id)  
+    FOREIGN KEY(studio_id) REFERENCES studios(studio_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ); 
 """
 
@@ -72,7 +74,9 @@ CREATE TABLE anime_tags(
     tag_id INTEGER,
     PRIMARY KEY(anime_id, tag_id)
     FOREIGN KEY(anime_id) REFERENCES animes(anime_id),
-    FOREIGN KEY(tag_id) REFERENCES tags(tag_id)   
+    FOREIGN KEY(tag_id) REFERENCES tags(tag_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ); 
 """
 

@@ -18,14 +18,14 @@ def run_query(DB, q):
 
 def run_cmd(DB, c):
     with sqlite3.connect(DB) as conn:
-        conn.execute('PRAGMA foreign_key = ON;')
+        conn.execute('PRAGMA foreign_key = 1;')
         conn.isolation_level = None
         conn.execute(c)
 
 
 def run_insert(DB, c, val):
     with sqlite3.connect(DB) as conn:
-        conn.execute('PRAGMA foreign_keys = ON;')
+        conn.execute('PRAGMA foreign_keys = 1;')
         conn.isolation_level = None
         conn.execute(c, val)
 
@@ -274,8 +274,8 @@ def anime_scrape(DB=DB, sleep_min=sleep_min, sleep_max=sleep_max):
 
                     # write into SQL DB
                     try:
-                        run_insert(DB, insert_q1(int(anime_id), anime_name, int(studio_id),
-                                   ep_totals, src_mat, air_dt, orating, member, synopsis))
+                        run_insert(DB, insert_q1, (int(anime_id), anime_name, int(studio_id),
+                                   ep_totals, src_mat, air_dt, orating, member.strip(), synopsis))
                     except Exception as e:
                         print('Failed to insert into animes for anime_id: {0}, {1}'.format(
                             anime_id, e))
@@ -291,7 +291,7 @@ def anime_scrape(DB=DB, sleep_min=sleep_min, sleep_max=sleep_max):
                             '/anime/genre/', '').split('/')[0]
                         for t in tag_id:
                             try:
-                                run_insert(DB, insert_q2(
+                                run_insert(DB, insert_q2, (
                                     int(anime_id), int(t)))
                             except Exception as e:
                                 print('Failed to insert into anime_tags for anime_id: {0}, {1}'.format(
@@ -310,13 +310,21 @@ def anime_scrape(DB=DB, sleep_min=sleep_min, sleep_max=sleep_max):
                 time.sleep(random.uniform(sleep_min, sleep_max))
 
 
+def review_scrape(DB=DB, pg_start=pg_start, pg_end=pg_end, sleep_min=sleep_min, sleep_max=sleep_max):
+    start_time = time.time()
+
+
 def scrape_all():
-    studios_scrape()
-    tags_scrape()
+    studios_scrape()    # 35secs
+    tags_scrape()       # 10secs
     print('Halting...')
     time.sleep(random.uniform(sleep_min, sleep_max))
     os.system('cls' if os.name == 'nt' else 'clear')
-    anime_scrape()
+    anime_scrape()      # 3 hrs
+    print('Halting...')
+    time.sleep(random.uniform(sleep_min, sleep_max))
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
-scrape_all()
+if __name__ == '__main__':
+    scrape_all()
