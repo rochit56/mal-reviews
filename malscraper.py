@@ -1,3 +1,11 @@
+#                   Copyright [2022] [ROCHIT]
+
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+
+#        http://www.apache.org/licenses/LICENSE-2.0
+
 from config import *
 from requests import get
 from bs4 import BeautifulSoup
@@ -171,7 +179,7 @@ def anime_scrape(DB=DB, sleep_min=sleep_min, sleep_max=sleep_max):
         members,
         synopsis
     ) 
-    VALUES(?,?,?,?,?,?,?,?,?)
+    VALUES (?,?,?,?,?,?,?,?,?)
     '''
 
     insert_q2 = '''
@@ -312,6 +320,17 @@ def anime_scrape(DB=DB, sleep_min=sleep_min, sleep_max=sleep_max):
 
 def review_scrape(DB=DB, pg_start=pg_start, pg_end=pg_end, sleep_min=sleep_min, sleep_max=sleep_max):
     start_time = time.time()
+    insert_q = '''
+    INSERT OR IGNORE INTO reviews(
+        review_id,
+        anime_id,
+        review_date,
+        reviewer_rating,
+        review_tag,
+        review_body
+    )
+    VALUES (?,?,?,?,?,?)
+    '''
 
 
 def scrape_all():
@@ -322,9 +341,10 @@ def scrape_all():
     os.system('cls' if os.name == 'nt' else 'clear')
     anime_scrape()      # 3 hrs
     print('Halting...')
-    time.sleep(random.uniform(sleep_min, sleep_max))
-    os.system('cls' if os.name == 'nt' else 'clear')
+    review_scrape()     # 3
+    print('Halting...')
 
 
 if __name__ == '__main__':
-    scrape_all()
+    # scrape_all()
+    review_scrape()

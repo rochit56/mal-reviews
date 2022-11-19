@@ -1,7 +1,13 @@
 import sqlite3
+import os
 from config import DB
 import pandas as pd
 
+if os.path.exists(DB):
+    os.remove(DB)
+    print("Removing old database; Fresh iteration\n----------")
+else:
+    print("Initializing fresh iteration\n----------")
 
 def run_query(q):
     with sqlite3.connect(DB) as conn:
