@@ -1,6 +1,7 @@
 ![Header  Photo by Gracia Dharma on Unsplash](img/001.jpg)
 
 # MAL reviews scraping :sparkles:
+![build](https://img.shields.io/badge/build-passed-inactive/?style=flat-square&logo=python&color=lightgrey)
 ### :bar_chart: Proof of Concept 
 
 Scripts for web scraping anime review data from https://myanimelist.net/ into a SQL database 
