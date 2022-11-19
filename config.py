@@ -1,8 +1,9 @@
 # Config for malscraper script
 
-DB= "db/anime.db"
-sleep_min = 9
-sleep_max = 18
+DB_unix = "db/anime.db"
+DB_win = "db\\anime.db"
+sleep_min = 6
+sleep_max = 12
 
 # UP
 pg_start = 1

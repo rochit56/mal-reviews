@@ -17,8 +17,11 @@ import time
 import pandas as pd
 import sqlite3
 
+DB = (DB_win if os.name == 'nt' else DB_unix)
 
 # interface with SQL
+
+
 def run_query(DB, q):
     with sqlite3.connect(DB) as conn:
         return pd.read_sql(q, conn)
@@ -332,6 +335,71 @@ def review_scrape(DB=DB, pg_start=pg_start, pg_end=pg_end, sleep_min=sleep_min, 
     VALUES (?,?,?,?,?,?)
     '''
 
+    requests = 0
+    for j in range(pg_start, pg_end):
+        url = 'https://myanimelist.net/reviews.php?t=anime&spoiler=on&p={}'.format(
+            j)
+        headers = {
+            "Usr-agent": "mal scraper for research"
+        }
+        print("Scraping: {}".format(url))
+
+        # handel timeout
+        try:
+            response = get(url, headers=headers, timeout=10)
+        except:
+            print("Request timeout")
+            pass
+
+        if response.status_code != 200:
+            print("Request: {}; Status Code: {}".format(
+                requests, response.status_code))
+            pass
+
+        html_soup = BeautifulSoup(response.text, 'html.parser')
+        review_containers = html_soup.find_all(
+            'div', class_='review-element js-review-element')
+        for container in review_containers:
+            review_element = container.div
+
+            # review id Primary key
+            r_id = int(container.find('div', class_='open').find(
+                'a').attrs['href'].replace('https://myanimelist.net/reviews.php?id=', ''))
+
+            # anime id
+            a_id = int(container.find('div', class_='titleblock mb4').find(
+                'a', class_='title ga-click').attrs['href'].replace('https://myanimelist.net/anime/', '').split('/')[0])
+
+            # review info
+            r_date = container.find('div', class_='update_at').text
+            r_rate = int(container.find('div', class_='rating').find(
+                'span', class_='num').text)
+            r_tag = container.find('div', class_='js-btn-label').text.strip()
+            r_body = container.find(
+                'div', class_='text').text.strip()
+
+            # write into SQL DB
+            try:
+                run_insert(DB, insert_q, (r_id, a_id,
+                           r_date, r_rate, r_tag, r_body))
+            except Exception as e:
+                print('Failed to scrape anime_id : {} {}'.format(a_id, e))
+                pass
+
+        # Provide stats for monitoring
+        current_time = time.time()
+        elapsed_time = current_time - start_time
+        requests = j + 1 - pg_start
+
+        print('Requests Completed: {}; Frequency: {} requests/s'.format(requests,
+                requests/elapsed_time))
+        print('Elapased Time: {} minutes'.format(elapsed_time/60))
+        if requests == pg_end - pg_start + 1:
+            print('Scrape Complete')
+            break
+        print('Pausing...')
+        time.sleep(random.uniform(sleep_min, sleep_max))
+
 
 def scrape_all():
     studios_scrape()    # 35secs
@@ -346,5 +414,4 @@ def scrape_all():
 
 
 if __name__ == '__main__':
-    # scrape_all()
-    review_scrape()
+    scrape_all()

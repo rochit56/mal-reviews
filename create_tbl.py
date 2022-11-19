@@ -1,13 +1,18 @@
 import sqlite3
 import os
-from config import DB
+from config import DB_unix, DB_win
 import pandas as pd
 
+DB = (DB_win if os.name == 'nt' else DB_unix)
+
 if os.path.exists(DB):
+    os.system('copy db\\anime.db db\\anime-old.db' if os.name == 'nt' 
+                else 'cp db/anime.db db/anime-old.db')
     os.remove(DB)
-    print("Removing old database; Fresh iteration\n----------")
+    print("Renaming old database; Fresh iteration\n----------")
 else:
     print("Initializing fresh iteration\n----------")
+
 
 def run_query(q):
     with sqlite3.connect(DB) as conn:
